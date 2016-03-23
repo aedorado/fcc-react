@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Game of Life</title>
+	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+
+	<style>
+		
+		#content {
+			height: 300px;
+			width: 600px;
+			/*background-color: #1e1;*/
+		}
+
+
+		#display {
+			position: absolute;
+			left: 50%;
+			width: 40%;
+			height: 100%;
+			/*color:  white;*/
+			display: inline;
+		}
+
+		#tarea {
+			position: relative;
+			height: 100%;
+			width: 40%;
+			display: inline;
+		}
+
+		.full {
+			height: 100%;
+			width: 100%;
+		}
+
+
+	</style>
+
+	<script src="js/marked/marked.min.js"></script>
+	<script src="js/react/react.min.js"></script>
+    <script src="js/react/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+
+</head>
+
+  <div id="content">
+  	
+
+
+
+  </div>
+
+  <script>
+    // document.getElementById('content').innerHTML = marked('Heading\n\n=======\n\nSub-heading\n\n-----------\n\n### Another deeper heading\n\nParagraphs are separated\n\nby a blank line.\n\nLeave 2 spaces at the end of a line to do a\n\nline break\n\nText attributes *italic*, **bold**, \n\n`monospace`, ~~strikethrough~~ .\n\nShopping list:  * apples  * oranges  * pears\n\nNumbered list:\n\n  1. apples\n\n  2. oranges\n\n  3. pears\n\nThe rain---not the reign---in\n\nSpain.\n\n *[Herman Fassett](http://freecodecamp.com/hermanfassett)*');
+  </script>
+
+<script type="text/babel">
+
+	var Output = React.createClass({
+
+		render: function() {
+			return (
+				<div id="display">{this.props.contents}</div>
+			);
+		}
+
+	});
+
+	var Input = React.createClass({
+
+		getInitialState: function() {
+			return {	text: ''	}
+		},
+
+		update: function() {
+			this.setState({
+				text :(this.refs.newText.value)
+			});
+		},
+
+		render: function() {
+			return (
+				<div className="full">
+					<textarea id="tarea" ref="newText" onKeyUp={this.update} />
+					<Output contents={this.state.text} />
+				</div>
+			)
+		}
+
+	});
+
+	ReactDOM.render(<Input />, document.getElementById('content'));
+
+
+</script>
+
+</html>
