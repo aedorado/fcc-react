@@ -2,32 +2,48 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Game of Life</title>
-	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+	<title>Markdown Preview</title>
 
 	<style>
+
+		* {
+			margin: 0px;
+		}
 		
-		#content {
-			height: 300px;
-			width: 600px;
-			/*background-color: #1e1;*/
+		h2#heading {
+			text-align: center;
+			margin-top: 16px;
 		}
 
+		#content {
+			position: relative;
+			margin: 2% 5%;
+			min-height: 320px;
+			width: 90%;
+			background-color: #ccc;
+			border-radius: 6px;
+		}
+
+		.inner-boxes {
+			top: -6px;
+			height: 105%;
+			width: 40%;
+			position: absolute;
+			display: inline;
+			border-radius: 5px;
+			box-shadow: 6px 6px 6px #aaa;
+		}
 
 		#display {
-			position: absolute;
-			left: 50%;
+			left: 55%;
 			width: 40%;
-			height: 100%;
-			/*color:  white;*/
-			display: inline;
+			background-color: #eee;
+			padding: 4px;
+			overflow-y: scroll;
 		}
 
 		#tarea {
-			position: relative;
-			height: 100%;
-			width: 40%;
-			display: inline;
+			left: 5%;
 		}
 
 		.full {
@@ -39,30 +55,30 @@
 	</style>
 
 	<script src="js/marked/marked.min.js"></script>
-	<script src="js/react/react.min.js"></script>
-    <script src="js/react/react-dom.min.js"></script>
+	<script src="js/react/react.js"></script>
+    <script src="js/react/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
 
 </head>
 
-  <div id="content">
-  	
-
-
-
-  </div>
-
-  <script>
-    // document.getElementById('content').innerHTML = marked('Heading\n\n=======\n\nSub-heading\n\n-----------\n\n### Another deeper heading\n\nParagraphs are separated\n\nby a blank line.\n\nLeave 2 spaces at the end of a line to do a\n\nline break\n\nText attributes *italic*, **bold**, \n\n`monospace`, ~~strikethrough~~ .\n\nShopping list:  * apples  * oranges  * pears\n\nNumbered list:\n\n  1. apples\n\n  2. oranges\n\n  3. pears\n\nThe rain---not the reign---in\n\nSpain.\n\n *[Herman Fassett](http://freecodecamp.com/hermanfassett)*');
-  </script>
+<body>
+	<h2 id="heading">MARKDOWN PREVIEW</h2>
+  	<div id="content"></div>
+</body>
 
 <script type="text/babel">
 
 	var Output = React.createClass({
 
+		createMarkup: function() {
+			var html = marked(this.props.contents, {sanitize: true});
+			return { __html: html}
+		},
+
 		render: function() {
+			
 			return (
-				<div id="display">{this.props.contents}</div>
+				<div className="inner-boxes" id="display" dangerouslySetInnerHTML={this.createMarkup()}></div>
 			);
 		}
 
@@ -71,7 +87,8 @@
 	var Input = React.createClass({
 
 		getInitialState: function() {
-			return {	text: ''	}
+			return {	text: 'Heading\n=======\n\nSub-heading\n-----------\n \n### Another deeper heading\n \nParagraphs are separated\nby a blank line.\n\nLeave 2 spaces at the end of a line to do a  \nline break\n\nText attributes *italic*, **bold**, \n`monospace`, ~~strikethrough~~ .\n\nShopping list:\n\n  * apples\n  * oranges\n  * pears\n\nNumbered list:\n\n  1. apples\n  2. oranges\n  3. pears\n\nThe rain---not the reign---in\nSpain.\n\n *[Herman Fassett](http://freecodecamp.com/hermanfassett)*'	
+					}
 		},
 
 		update: function() {
@@ -83,7 +100,7 @@
 		render: function() {
 			return (
 				<div className="full">
-					<textarea id="tarea" ref="newText" onKeyUp={this.update} />
+					<textarea className="inner-boxes" id="tarea" ref="newText" onChange={this.update} value={this.state.text} />
 					<Output contents={this.state.text} />
 				</div>
 			)
