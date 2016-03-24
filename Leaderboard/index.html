@@ -73,7 +73,7 @@
 			top: 12px;
 			left: 35%;
 			color: black;
-			text-decoration: underline
+			text-decoration: underline;
 		}
 
 		#profile-link {	
@@ -141,18 +141,18 @@
 
 		sortAll: function() {
 			if (this.state.sorted !== 'alltime') {
-				this.props.alldata.sort(function(a, b) {
-					return a.alltime < b.alltime;
-				});
+				// this.props.alldata.sort(function(a, b) {
+				// 	return a.alltime < b.alltime;
+				// });
 				this.setState({sorted:'alltime'});
 			}
 		},
 		
 		sortRecent: function() {
 			if (this.state.sorted !== 'recent') {
-				this.props.alldata.sort(function(a, b) {
-					return a.recent < b.recent;
-				});
+				// this.props.alldata.sort(function(a, b) {
+				// 	return a.recent < b.recent;
+				// });
 				this.setState({sorted:'recent'});
 			}
 		},
@@ -160,9 +160,15 @@
 		render: function() {
 
 			var rows = [];
-			this.props.alldata.forEach(function(datum, i) {
-				rows.push(<TableRow data={datum} key={i} num={i+1} />);
-			});
+			if (this.state.sorted === 'recent') {
+				this.props.recentdata.forEach(function(datum, i) {
+					rows.push(<TableRow data={datum} key={i} num={i+1} />);
+				});
+			} else if (this.state.sorted === 'alltime') {
+				this.props.alldata.forEach(function(datum, i) {
+					rows.push(<TableRow data={datum} key={i} num={i+1} />);
+				});
+			}
 
 			return (
 				<table>
@@ -185,7 +191,12 @@
 		$.ajax({
 			url: 'http://fcctop100.herokuapp.com/api/fccusers/top/recent'
 		}).done(function(response) {
-			ReactDOM.render(<LeaderBoard alldata={response} />, document.getElementById('content'));
+			var recent = response;
+			$.ajax({
+				url: 'http://fcctop100.herokuapp.com/api/fccusers/top/alltime'
+			}).done(function(response) {
+				ReactDOM.render(<LeaderBoard alldata={response} recentdata={recent} />, document.getElementById('content'));
+			});
 		});
 	});
 
