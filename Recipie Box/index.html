@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Recipie Box</title>
+
+	<style>
+
+		/** {
+			margin: 0px;
+		}*/
+		
+		h2#heading {
+			text-align: center;
+			margin-top: 16px;
+		}
+
+		#profile-link {	
+			left: calc(50% - 60px);
+			position: absolute;
+			bottom: 16px;
+		}
+
+		#code-link {
+			left: calc(50% + 5px);
+			position: absolute;
+			bottom: 14px;
+		}
+
+		#code-link img {
+			height: 60px;
+			width: 60px;
+		}
+
+		#profile-link img {
+			height: 52px;
+			width: 52px;
+		}
+
+	</style>
+
+	<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<script src="../static/js/react/react.js"></script>
+    <script src="../static/js/react/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+
+</head>
+
+<body>
+	<h2 id="heading">RECIPIE BOX</h2>
+
+  	<div id="content" class="row">
+  		
+		<div class="panel-group col-md-10 col-md-offset-1" id="accordion">
+
+<!-- 		  <div class="panel panel-default">
+		    <div class="panel-heading">
+		      <h4 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+		        Collapsible Group 1</a>
+		      </h4>
+		    </div>
+		    <div id="collapse1" class="panel-collapse collapse">
+		      <div class="panel-body">
+				<h4>Ingredients</h4>
+				<hr>
+				<ul class="list-group">
+					<li class="list-group-item">Eggs</li>
+					<li class="list-group-item">Olive Oil</li>
+					<li class="list-group-item">Duck</li>
+				</ul>
+				<div class="btn btn-danger">DELETE</div>
+				<div class="btn btn-primary">EDIT</div>
+		      </div>
+		    </div>
+		  </div> -->
+
+		</div>
+
+  	</div>
+
+  	<div class="btn btn-primary col-md-offset-10"  data-toggle="modal" data-target="#new-item-modal">Add Recipie</div>
+
+  	<div id="new-item-modal" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Add new recipie</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form">
+			  <div class="form-group">
+			    <label for="recipie-name-input">Recipie Name:</label>
+			    <input type="text" class="form-control" id="recipie-name-input" placeholder="Name">
+			  </div>
+			  <div class="form-group">
+			    <label for="recipie-ing-input">Ingredients:</label>
+			    <textarea class="form-control" rows="2" id="recipie-ing-input" placeholder="Enter Ingredients seperated by commas."></textarea>
+			  </div>
+			</form>
+	      </div>
+	      <div class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal" id="new-item-modal-save">Save</button>
+	        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+
+  	<div id="link-div">
+  		<a href="https://github.com/aedorado/fcc-react" id="code-link"><img src="../static/svg/github.svg"></a>
+  		<a href="http://aedorado.github.io" id="profile-link"><img src="../static/svg/github-face.svg"></a>
+ 	</div>
+</body>
+
+<script type="text/babel">
+
+	var Rbox = React.createClass({
+
+		getInitialState: function() {
+			
+		}
+
+		render: function() {
+			return (
+				<div className="panel panel-default">
+				    <div className="panel-heading">
+				    	<h4 className="panel-title">
+				        	<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Collapsible Group 1</a>
+				    	</h4>
+				    </div>
+				    <div id="collapse1" className="panel-collapse collapse">
+				    	<div className="panel-body">
+							<h4>Ingredients</h4>
+							<hr />
+							<ul className="list-group">
+								<li className="list-group-item">Eggs</li>
+								<li className="list-group-item">Olive Oil</li>
+								<li className="list-group-item">Duck</li>
+							</ul>
+							<div className="btn btn-danger">DELETE</div> 
+							<div className="btn btn-primary">EDIT</div>
+				    	</div>
+				    </div>
+				</div>
+			);
+		}
+
+	});
+
+	ReactDOM.render(<Rbox />, document.getElementById('accordion'));
+
+	$('#new-item-modal-save').click(function() {
+		console.log($('#recipie-name-input').val(), $('#recipie-ing-input').val());
+		var rbjson = JSON.parse(localStorage.getItem('recipiebox')) || [];
+		rbjson.push({name: $('#recipie-name-input').val(), ing: $('#recipie-ing-input').val()});
+		localStorage.setItem('recipiebox', JSON.stringify(rbjson));
+		console.log(rbjson);
+	});
+
+</script>
+
+</html>
