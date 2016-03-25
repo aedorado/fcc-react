@@ -36,6 +36,10 @@
 			height: 52px;
 			width: 52px;
 		}
+		
+		.btn {
+			margin: 0px 4px;
+		}
 
 	</style>
 
@@ -164,6 +168,11 @@
 			update();
 		},
 
+		edit: function() {
+			$('#recipie-name-input').val(recipies[this.props.pos].name);
+			$('#recipie-ing-input').val(recipies[this.props.pos].ing);
+		},
+
 		render: function() {
 			return (
 				<div id={"collapse" + this.props.pos} className="panel-collapse collapse">
@@ -171,8 +180,8 @@
 						<h4>Ingredients</h4>
 						<hr />
 						<ItemList pos={this.props.pos} />
+						<div className="btn btn-primary" onClick={this.edit} data-toggle="modal" data-target="#new-item-modal">EDIT</div>
 						<div className="btn btn-danger" onClick={this.remove}>DELETE</div>
-						<div className="btn btn-primary">EDIT</div>
 					</div>
 			    </div>
 			)
