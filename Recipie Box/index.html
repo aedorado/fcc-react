@@ -55,9 +55,9 @@
 
   	<div id="content" class="row">
   		
-<!-- 		<div class="panel-group col-md-10 col-md-offset-1" id="accordion">
+		<div class="panel-group col-md-10 col-md-offset-1" id="accordion">
 
-		  <div class="panel panel-default">
+	<!-- <div class="panel panel-default">
 		    <div class="panel-heading">
 		      <h4 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
@@ -77,7 +77,8 @@
 				<div class="btn btn-primary">EDIT</div>
 		      </div>
 		    </div>
-		  </div> -->
+		  </div>
+		   -->
 <!-- 		  	  <div class="panel panel-default">
 		    <div class="panel-heading">
 		      <h4 class="panel-title">
@@ -100,11 +101,11 @@
 		    </div>
 		  </div> -->
 
-		<!-- </div> -->
+		</div>
 
   	</div>
 
-  	<div class="btn btn-primary col-md-offset-10"  data-toggle="modal" data-target="#new-item-modal">Add Recipie</div>
+  	<div class="btn btn-primary col-md-offset-10" data-toggle="modal" data-target="#new-item-modal">Add Recipie</div>
 
   	<div id="new-item-modal" class="modal fade" role="dialog">
 	  <div class="modal-dialog">
@@ -142,116 +143,95 @@
 
 <script type="text/babel">
 
-	var RboxItemHead = React.createClass({
-		render: function() {
-			var collhref = "#collapse" + this.props.pos;
-			return (
-				<div className="panel-heading">
-				   	<h4 className="panel-title">
-				       	<a data-toggle="collapse" data-parent="#accordion" href={collhref}>{this.props.name}</a>
-				   	</h4>
-				</div>
-			);
-		}
-	});
+	var recipies = JSON.parse(localStorage.getItem('recipiebox')) || [];
 
-	var RboxItemBodyElement = React.createClass({
+	var ItemList = React.createClass({
 		render: function() {
-			return (
-				<li className="list-group-item">{this.props.data}</li>
-			)
-		}
-	});
-
-	var RboxItemBody = React.createClass({
-		remove: function() {
-			var that = this;
-			var rbjson = JSON.parse(localStorage.getItem('recipiebox')) || [];
-			rbjson = rbjson.filter(function(obj) {
-    			return obj.name !== that.props.data.name;
+			var rows = [];
+			recipies[this.props.pos].ing.split(',').forEach(function(itemname, i) {
+				rows.push(<li className="list-group-item" key={i}>{itemname}</li>);
 			});
-			localStorage.setItem('recipiebox', JSON.stringify(rbjson));
+			
+			return (<ul className="list-group">{rows}</ul>);
+		}
+	});
+
+	var ItemBody = React.createClass({
+
+		remove: function() {
+			recipies.splice(this.props.pos, 1);
+			localStorage.setItem('recipiebox', JSON.stringify(recipies));
 			update();
 		},
 
 		render: function() {
-			var collid = "collapse" + this.props.pos;
-			var rows = [];
-			this.props.data.ing.split(',').forEach(function(itemname, i) {
-				rows.push(<RboxItemBodyElement data={itemname} key={i} />);
-			})
-
-
 			return (
-			    <div id={collid} className="panel-collapse collapse">
-			    	<div className="panel-body">
+				<div id={"collapse" + this.props.pos} className="panel-collapse collapse">
+					<div className="panel-body">
 						<h4>Ingredients</h4>
 						<hr />
-						<ul className="list-group">{rows}</ul>
+						<ItemList pos={this.props.pos} />
+						<div className="btn btn-danger" onClick={this.remove}>DELETE</div>
 						<div className="btn btn-primary">EDIT</div>
-						<div className="btn btn-danger" onClick={this.remove}>DELETE</div> 
-			    	</div>
+					</div>
 			    </div>
-			);
-		}
-	});
-
-	var RboxItem = React.createClass({
-
-		render: function() {
-			// console.log(this.props.data.ing);
-			return (
-				<div className="panel panel-default">
-					<RboxItemHead name={this.props.data.name} pos={this.props.pos} />
-					<RboxItemBody data={this.props.data} pos={this.props.pos} />
-			    </div>
-			);
+			)
 		}
 
 	});
 
-	var Rbox = React.createClass({
-
-		getInitialState: function() {
-			return {
-				data: JSON.parse(localStorage.getItem('recipiebox')) || []
-			}
-		},
-
-		componentDidMount: function() {
-			document.getElementById("new-item-modal-save").addEventListener('click', this.update, false);	
-		},
-
-		update: function() {
-			// console.log($('#recipie-name-input').val(), $('#recipie-ing-input').val());
-			var rbjson = JSON.parse(localStorage.getItem('recipiebox')) || [];
-			rbjson.push({name: $('#recipie-name-input').val(), ing: $('#recipie-ing-input').val()});
-			localStorage.setItem('recipiebox', JSON.stringify(rbjson));
-			console.log(rbjson);
-			this.setState({ data: JSON.parse(localStorage.getItem('recipiebox')) });
-		},
+	var RecipieBook = React.createClass({
 
 		render: function() {
-			var content = [];
-			var rbjson = this.state.data;
+			var rows = [];
+			this.props.recipies.forEach(function(data, i) {
+				rows.push(
+					<div className="panel panel-default">
 
-			rbjson.forEach(function(data, i) {
-				content.push(<RboxItem data={data} key={i} pos={i} />);
+					    <div className="panel-heading">
+					      <h4 className="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href={"#collapse" + i}>{data.name}</a>
+					      </h4>
+					    </div>
+
+					    <ItemBody pos={i} />
+
+					</div>
+				);
 			});
 
 			return (
-				<div className="panel-group col-md-10 col-md-offset-1" id="accordion">{content}</div>
-			);
+				<div className="panel-group col-md-10 col-md-offset-1" id="accordion">{rows}</div>
+			)
 		}
-
 	});
 
 	function update() {
-		ReactDOM.render(<Rbox />, document.getElementById('content'));
-	}
+		ReactDOM.render(<RecipieBook recipies={recipies} />, document.getElementById("content"));
+	}	
+
+	document.getElementById("new-item-modal-save").addEventListener('click', updateLocal, false);	
+
+	function updateLocal() {
+		var newname = $('#recipie-name-input').val();
+		var newings = $('#recipie-ing-input').val();
+		var edited = false;
+		for (var i = 0; i != recipies.length; i++) {
+			if (recipies[i].name === newname) {
+				recipies[i].ing = newings;
+				edited = true;
+			}
+		}
+		if (!edited) {
+			recipies.push({name: newname, ing: newings});
+		}
+		localStorage.setItem('recipiebox', JSON.stringify(recipies));
+		update();
+	};
 
 	update();
 
 </script>
 
 </html>
+
